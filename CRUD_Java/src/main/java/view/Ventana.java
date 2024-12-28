@@ -29,21 +29,11 @@ public class Ventana extends javax.swing.JFrame {
         createButton = new javax.swing.JButton();
         updateButton = new javax.swing.JButton();
         deleteButton = new javax.swing.JButton();
-        searchButton = new javax.swing.JButton();
+        clearButton = new javax.swing.JButton();
         table = new javax.swing.JScrollPane();
         personaTable = new javax.swing.JTable();
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
+
         jScrollPane1.setViewportView(jTable1);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -74,7 +64,7 @@ public class Ventana extends javax.swing.JFrame {
 
         deleteButton.setText("Eliminar");
 
-        searchButton.setText("Buscar");
+        clearButton.setText("Limpiar");
 
 
         table.setViewportView(personaTable);
@@ -108,7 +98,7 @@ public class Ventana extends javax.swing.JFrame {
                                         .addGap(6, 6, 6)
                                         .addComponent(createButton)
                                         .addGap(24, 24, 24)
-                                        .addComponent(searchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(clearButton, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
                                         .addComponent(updateButton)
                                         .addGap(18, 18, 18)
@@ -138,7 +128,7 @@ public class Ventana extends javax.swing.JFrame {
                     .addComponent(createButton)
                     .addComponent(updateButton)
                     .addComponent(deleteButton)
-                    .addComponent(searchButton))
+                    .addComponent(clearButton))
                 .addGap(18, 18, 18)
                 .addComponent(table, javax.swing.GroupLayout.PREFERRED_SIZE, 246, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -170,7 +160,7 @@ public class Ventana extends javax.swing.JFrame {
     private javax.swing.JPanel mainPanel;
     private javax.swing.JTextField nameTextField;
     private javax.swing.JTable personaTable;
-    private javax.swing.JButton searchButton;
+    private javax.swing.JButton clearButton;
     private javax.swing.JScrollPane table;
     private javax.swing.JButton updateButton;
     // End of variables declaration//GEN-END:variables
@@ -182,8 +172,8 @@ public class Ventana extends javax.swing.JFrame {
         updateButton.setActionCommand("UPDATE");
         deleteButton.addActionListener(control);
         deleteButton.setActionCommand("DELETE");
-        searchButton.addActionListener(control);
-        searchButton.setActionCommand("SEARCH");
+        clearButton.addActionListener(control);
+        clearButton.setActionCommand("CLEAR");
         personaTable.addMouseListener(control2);
     }
 

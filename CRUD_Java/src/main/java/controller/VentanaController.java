@@ -1,9 +1,11 @@
 package controller;
 
 import dao.PersonaDAO;
+import exceptions.ParametroInvalidoException;
 import model.Persona;
 import view.Ventana;
 
+import javax.print.attribute.standard.JobMessageFromOperator;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -36,27 +38,17 @@ public class VentanaController implements ActionListener, MouseListener {
         String msj = e.getActionCommand();
 
         if(msj.equals("CREATE")){
-            personaDAO.createUser(
-                            ventana.getNameTextField(),
-                            ventana.getLastnameTextField(),
-                            ventana.getDniTextField()
-                            );
-            this.ventana.updateTable(personaDAO.read());
+            crearPersona(ventana.getNameTextField(), ventana.getLastnameTextField(), ventana.getDniTextField());
+        }else if(msj.equals("CLEAR")){
             this.ventana.clearField();
-        }else if(msj.equals("READ")){
-
         }else if(msj.equals("UPDATE")){
             Integer dni = this.ventana.getSeleccionado();
             if(dni != null){
                 Persona persona = personaDAO.search(dni);
                 if(persona != null)
-                    personaDAO.updateUser(persona.getNombre(),
-                                        persona.getApellido(),
-                                        String.valueOf(persona.getDni())
-                    );
+                    actualizarPersona(ventana.getNameTextField(), ventana.getLastnameTextField(), ventana.getDniTextField());
             }
-            this.ventana.updateTable(personaDAO.read());
-            this.ventana.clearField();
+
         }else if(msj.equals("DELETE")){
             Integer dni = this.ventana.getSeleccionado();
             if(dni != null) {
@@ -100,4 +92,45 @@ public class VentanaController implements ActionListener, MouseListener {
     public void mouseExited(MouseEvent e) {
 
     }
+
+    public void crearPersona(String nombre, String apellido, String dni){
+        Persona persona;
+        try {
+            this.validarDatos(nombre,apellido,dni);
+            persona = this.personaDAO.search(Integer.parseInt(dni));
+            if(persona != null)
+                throw new ParametroInvalidoException("El DNI ya está en uso.");
+            this.personaDAO.createUser(nombre,apellido,dni);
+            this.ventana.updateTable(personaDAO.read());
+            this.ventana.clearField();
+        }
+        catch (ParametroInvalidoException e) {
+            JOptionPane.showMessageDialog(null,e.getMessage());
+        }
+    }
+
+    public void actualizarPersona(String nombre, String apellido, String dni){
+        Persona persona;
+        try{
+            this.validarDatos(nombre, apellido, dni);
+            this.personaDAO.updateUser(nombre, apellido, dni);
+            this.ventana.updateTable(personaDAO.read());
+            this.ventana.clearField();
+        }catch(ParametroInvalidoException e){
+            JOptionPane.showMessageDialog(null,e.getMessage());
+        }
+    }
+
+    public void validarDatos(String nombre, String apellido, String dni)
+    throws ParametroInvalidoException {
+        if(nombre.isEmpty() || apellido.isEmpty() || dni.isEmpty())
+            throw new ParametroInvalidoException("Todos los campos son obligatorios.");
+        if(!dni.matches("\\d+") || Integer.parseInt(dni) < 10000000 || Integer.parseInt(dni) > 99999999)
+            throw new ParametroInvalidoException("El DNI no es válido.");
+        if( !nombre.matches("^[A-ZÁÉÍÓÚÑa-záéíóúñ]+(?: [A-ZÁÉÍÓÚÑa-záéíóúñ]+)*$") ||
+                !apellido.matches("^[A-ZÁÉÍÓÚÑa-záéíóúñ]+(?: [A-ZÁÉÍÓÚÑa-záéíóúñ]+)*$") ||
+                nombre.length() < 3 || apellido.length() < 3)
+            throw new ParametroInvalidoException("Los nombres y apellidos deben tener al menos 3 caracteres.");
+    }
+
 }
