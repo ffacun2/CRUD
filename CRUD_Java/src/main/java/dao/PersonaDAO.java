@@ -2,6 +2,7 @@ package dao;
 
 
 import db.DataBaseConnection;
+import exceptions.DataBaseException;
 import model.Persona;
 
 import java.sql.*;
@@ -11,13 +12,9 @@ import java.util.List;
 /**
  * Clase que interactua directamente con la base de datos obteniendo los registros Personas
  */
-public class PersonaDAO {
+public class PersonaDAO implements IPersonaDAO{
 
     private Connection connection;
-
-    public PersonaDAO() throws SQLException {
-        this.connection = DataBaseConnection.getConnection();
-    }
 
     /**
      *  Metodo que crea un nuevo registro para la base de datos. Los parametros son validos.
@@ -26,37 +23,40 @@ public class PersonaDAO {
      * @param dni : DNI de la persona.
      * @return Retorna true/false de acuerdo si se pudo crear correctamente o no.
      */
-    public boolean createUser(String name, String lastname, String dni){
+    @Override
+    public boolean createUser(String name, String lastname, String dni)
+    throws DataBaseException {
         String query = "INSERT INTO personas (nombre,apellido,dni) VALUES (?,?,?);";
 
-        try{
-            PreparedStatement ps = this.connection.prepareStatement(query);
+        try ( Connection connection = DataBaseConnection.getConnection();
+              PreparedStatement ps = connection.prepareStatement(query);)
+        {
             ps.setString(1, name);
             ps.setString(2, lastname);
             ps.setString(3, dni);
 
             int rowsAffected = ps.executeUpdate();
-            if(rowsAffected > 0)
-                return true;
+            return rowsAffected > 0;
         }
         catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DataBaseException("Error al crear el usuario.",e);
         }
-        return false;
     }
 
     /**
      * Metodo que lee todos los registros Persona de la base de datos.
      * @return retorna todos los registros de la base de datos en una Lista con elementos de tipo Persona.
      */
-    public List<Persona> read(){
+    @Override
+    public List<Persona> read()
+    throws DataBaseException {
         String query = "SELECT * FROM personas;";
         List<Persona> personas = new ArrayList<Persona>();
 
-        try{
-            PreparedStatement ps = this.connection.prepareStatement(query);
-            ResultSet rs = ps.executeQuery();
-
+        try(Connection connection = DataBaseConnection.getConnection();
+            PreparedStatement ps = connection.prepareStatement(query);
+            ResultSet rs = ps.executeQuery();)
+        {
             while(rs.next()){
                personas.add(new Persona(rs.getString("nombre"),
                                         rs.getString("apellido"),
@@ -65,7 +65,7 @@ public class PersonaDAO {
             }
         }
         catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DataBaseException("Error al leer registros en la base de datos.",e);
         }
         return personas;
     }
@@ -77,23 +77,24 @@ public class PersonaDAO {
      * @param DNI :DNI de la persona.
      * @return Retorna true/false de acuerdo a si se actualizo correctamente en la base de datos.
      */
-    public boolean updateUser(String name, String lastname, String DNI){
+    @Override
+    public boolean updateUser(String name, String lastname, String DNI)
+    throws DataBaseException {
         String query = "UPDATE personas SET nombre=?, apellido=? WHERE dni=?;";
 
-        try{
-            PreparedStatement ps = this.connection.prepareStatement(query);
+        try(Connection connection = DataBaseConnection.getConnection();
+            PreparedStatement ps = connection.prepareStatement(query);)
+        {
             ps.setString(1, name);
             ps.setString(2, lastname);
             ps.setString(3, DNI);
-
             int rowsAffected = ps.executeUpdate();
-            if(rowsAffected > 0)
-                return true;
+
+            return rowsAffected > 0;
         }
         catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DataBaseException("Error al modificar el registro.",e);
         }
-        return false;
     }
 
     /**
@@ -101,21 +102,21 @@ public class PersonaDAO {
      * @param DNI :DNI de la persona a eliminar.
      * @return Retorna true/false de acuerdo si se pudo eliminar correctamente de la base de datos.
      */
-    public boolean deleteUser(int DNI){
+    @Override
+    public boolean deleteUser(Integer DNI)
+    throws DataBaseException {
         String query = "DELETE FROM personas WHERE dni=?;";
 
-        try{
-            PreparedStatement ps = this.connection.prepareStatement(query);
+        try(Connection connection = DataBaseConnection.getConnection();
+            PreparedStatement ps = connection.prepareStatement(query);)
+        {
             ps.setInt(1, DNI);
-
             int rowsAffected = ps.executeUpdate();
-            if(rowsAffected > 0)
-                return true;
+            return rowsAffected > 0;
         }
         catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DataBaseException("Error al eliminar el registro.",e);
         }
-        return false;
     }
 
     /**
@@ -124,15 +125,17 @@ public class PersonaDAO {
      * @param dni :DNI de la persona a buscar.
      * @return Retorna el Objeto Persona si encontro registro con el dni correspondiente o null caso contrario.
      */
-    public Persona search(int dni){
+    @Override
+    public Persona search(Integer dni)
+    throws DataBaseException {
         String query = "SELECT * FROM personas WHERE dni=?;";
         Persona persona = null;
 
-        try{
-            PreparedStatement ps = this.connection.prepareStatement(query);
+        try(Connection connection = DataBaseConnection.getConnection();
+            PreparedStatement ps = connection.prepareStatement(query);)
+        {
             ps.setInt(1, dni);
             ResultSet rs = ps.executeQuery();
-
             if(rs.next()){
                 persona = new Persona(rs.getString("nombre"),
                                         rs.getString("apellido"),
@@ -141,7 +144,7 @@ public class PersonaDAO {
             }
         }
         catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DataBaseException("Error al leer el registro.",e);
         }
         return persona;
     }
@@ -151,18 +154,15 @@ public class PersonaDAO {
      * @return Retorna una lista con los nombres de las columnas.
      */
     public List<String> getColumnName(){
-        String query = "SELECT 1 FROM personas LIMIT 1;";
         List<String> lista = new ArrayList<String>();
 
-        try{
-
+        try(Connection connection = DataBaseConnection.getConnection();)
+        {
             DatabaseMetaData meta = connection.getMetaData();
             ResultSet rs = meta.getColumns(null,null,"personas",null);
-
             while(rs.next()){
                 lista.add(rs.getString("COLUMN_NAME"));
             }
-
         }catch(SQLException e){
 
         }

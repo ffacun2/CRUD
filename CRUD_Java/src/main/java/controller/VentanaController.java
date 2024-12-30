@@ -1,36 +1,31 @@
 package controller;
 
 import dao.PersonaDAO;
+import exceptions.DataBaseException;
 import exceptions.ParametroInvalidoException;
 import model.Persona;
 import view.Ventana;
 
-import javax.print.attribute.standard.JobMessageFromOperator;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.sql.SQLException;
+import java.util.List;
 
 public class VentanaController implements ActionListener, MouseListener {
 
     private Ventana ventana;
     private PersonaDAO personaDAO;
 
-    public VentanaController(){
-        this.ventana = new Ventana();
+    public VentanaController(PersonaDAO personaDAO, Ventana ventana){
+        this.ventana = ventana;
         this.ventana.setLocationRelativeTo(null);
         this.ventana.setController(this,this);
-        try {
-            this.personaDAO = new PersonaDAO();
-            this.ventana.setTableTitle(personaDAO.getColumnName());
-            this.ventana.updateTable(personaDAO.read());
-            this.ventana.setVisible(true);
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null,"Error al conectar base de datos.");
-            this.ventana.dispose();
-        }
+        this.personaDAO = personaDAO;
+        this.ventana.setTableTitle(personaDAO.getColumnName());
+        this.ventana.updateTable(listarPersonas());
+        this.ventana.setVisible(true);
     }
 
     @Override
@@ -44,17 +39,14 @@ public class VentanaController implements ActionListener, MouseListener {
         }else if(msj.equals("UPDATE")){
             Integer dni = this.ventana.getSeleccionado();
             if(dni != null){
-                Persona persona = personaDAO.search(dni);
+                Persona persona = buscarPersona(dni);
                 if(persona != null)
                     actualizarPersona(ventana.getNameTextField(), ventana.getLastnameTextField(), ventana.getDniTextField());
             }
-
         }else if(msj.equals("DELETE")){
             Integer dni = this.ventana.getSeleccionado();
             if(dni != null) {
-                personaDAO.deleteUser(dni);
-                this.ventana.updateTable(personaDAO.read());
-                this.ventana.clearField();
+                eliminarPersona(dni);
             }
         }
     }
@@ -64,7 +56,12 @@ public class VentanaController implements ActionListener, MouseListener {
     public void mouseClicked(MouseEvent e) {
         Integer dni = this.ventana.getSeleccionado();
         if(dni != null){
-            Persona persona = personaDAO.search(dni);
+            Persona persona = null;
+            try {
+                persona = personaDAO.search(dni);
+            } catch (DataBaseException ex) {
+                JOptionPane.showMessageDialog(null,ex.getMessage());
+            }
             if(persona!=null){
                 this.ventana.setNameTextField(persona.getNombre());
                 this.ventana.setLastNameTextField(persona.getApellido());
@@ -104,7 +101,7 @@ public class VentanaController implements ActionListener, MouseListener {
             this.ventana.updateTable(personaDAO.read());
             this.ventana.clearField();
         }
-        catch (ParametroInvalidoException e) {
+        catch (DataBaseException | ParametroInvalidoException e) {
             JOptionPane.showMessageDialog(null,e.getMessage());
         }
     }
@@ -116,10 +113,40 @@ public class VentanaController implements ActionListener, MouseListener {
             this.personaDAO.updateUser(nombre, apellido, dni);
             this.ventana.updateTable(personaDAO.read());
             this.ventana.clearField();
-        }catch(ParametroInvalidoException e){
+        }catch(DataBaseException | ParametroInvalidoException e){
             JOptionPane.showMessageDialog(null,e.getMessage());
         }
     }
+
+    public void eliminarPersona(int dni){
+        try{
+            personaDAO.deleteUser(dni);
+            this.ventana.updateTable(listarPersonas());
+            this.ventana.clearField();
+        }catch(DataBaseException e){
+            JOptionPane.showMessageDialog(null,e.getMessage());
+        }
+
+    }
+
+    public List<Persona> listarPersonas(){
+        try{
+            return personaDAO.read();
+        } catch (DataBaseException e) {
+            JOptionPane.showMessageDialog(null,e.getMessage());
+        }
+        return null;
+    }
+
+    public Persona buscarPersona(Integer dni){
+        try{
+            return personaDAO.search(dni);
+        } catch (DataBaseException e) {
+            JOptionPane.showMessageDialog(null,e.getMessage());
+        }
+        return null;
+    }
+
 
     public void validarDatos(String nombre, String apellido, String dni)
     throws ParametroInvalidoException {
