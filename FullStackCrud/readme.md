@@ -88,12 +88,12 @@ front-ApiRestCrud/
 ```
 #### Archivos Principales
 
-- [main.jsx](http://_vscodecontentref_/10): Punto de entrada de la aplicación React.
-- [HeaderComponent.jsx](http://_vscodecontentref_/11): Componente de cabecera.
-- [BodyComponent.jsx](http://_vscodecontentref_/12): Componente principal que contiene el formulario de creación y la tabla de personas.
-- [CreateComponent.jsx](http://_vscodecontentref_/13): Componente para crear y editar personas.
-- [TablaComponent.jsx](http://_vscodecontentref_/14): Componente que muestra la lista de personas en una tabla.
-- [ClienteService.js](http://_vscodecontentref_/15): Servicio que maneja las llamadas a la API REST.
+- `main.jsx`: Punto de entrada de la aplicación React.
+- `HeaderComponent.jsx`: Componente de cabecera.
+- `BodyComponent.jsx`: Componente principal que contiene el formulario de creación y la tabla de personas.
+- `CreateComponent.jsx`: Componente para crear y editar personas.
+- `TablaComponent.jsx`: Componente que muestra la lista de personas en una tabla.
+- `ClienteService.js`: Servicio que maneja las llamadas a la API REST.
 
 #### Configuración
 
