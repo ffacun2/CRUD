@@ -1,12 +1,14 @@
 package controller;
 
-import exception.DataBaseException;
 import model.Persona;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import repository.PersonaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @RestController
@@ -18,36 +20,39 @@ public class PersonaController {
    private PersonaRepository personaRepository;
 
    @GetMapping
-    public List<Persona> getAllPersonas(){
+   public List<Persona> getAllPersonas(){
        return personaRepository.findAll();
    }
 
-   @PostMapping
-    public Persona createPersona(@RequestBody Persona persona){
-       return personaRepository.save(persona);
+   @GetMapping("/{id}")
+   public ResponseEntity<Persona> getPersonaById(@PathVariable Long id) {
+       Optional<Persona> persona = personaRepository.findById(id);
+       return persona.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
    }
 
-   @GetMapping("/{id}")
-    public Persona getPersonaById(@PathVariable Long id)
-   throws DataBaseException {
-       return personaRepository.findById(id).orElseThrow(() -> new DataBaseException("No se pudo encontrar la Persona"));
-   }
+   @PostMapping
+    public ResponseEntity<Persona> createPersona(@RequestBody Persona persona){
+       Persona savedPersona = personaRepository.save(persona);
+       return ResponseEntity.status(HttpStatus.CREATED).body(savedPersona);
+    }
 
    @PutMapping("/{id}")
-    public Persona updatePersona(@PathVariable Long id, @RequestBody Persona personaRequest)
-   throws DataBaseException {
-       Persona p = personaRepository.findById(id).orElseThrow(() -> new DataBaseException("No se pudo encontrar la Persona"));
+    public ResponseEntity<Persona> updatePersona(@PathVariable Long id, @RequestBody Persona personaRequest) {
+       if( !personaRepository.existsById(id) )
+              return ResponseEntity.notFound().build();
 
-       personaRequest.setNombre(p.getNombre());
-       personaRequest.setApellido(p.getApellido());
-       return personaRepository.save(personaRequest);
+       personaRequest.setId(id);
+       personaRepository.save(personaRequest);
+       return ResponseEntity.status(HttpStatus.CREATED).body(personaRequest);
    }
 
    @DeleteMapping("/{id}")
-    public void deletePersona(@PathVariable Long id)
-   throws DataBaseException {
-       Persona p = personaRepository.findById(id).orElseThrow(() -> new DataBaseException("No se pudo encontrar la Persona"));
-       personaRepository.delete(p);
+    public ResponseEntity<Void> deletePersona(@PathVariable Long id) {
+       if(!personaRepository.existsById(id))
+           return ResponseEntity.notFound().build();
+
+       personaRepository.deleteById(id);
+       return ResponseEntity.noContent().build();
    }
 
 }

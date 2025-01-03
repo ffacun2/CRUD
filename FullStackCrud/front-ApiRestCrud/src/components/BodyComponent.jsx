@@ -7,12 +7,12 @@ import { fetchPersonas } from "../services/ClienteService";
 
 export const BodyComponent = () => {
 	const [clientes, setClientes] = useState([]);
+	const [editingCliente, setEditingCliente] = useState(null);
 
     useEffect(() => {
 		const getPersonas = async () => {
 			try {
 				const response = await fetchPersonas();
-                console.log(response);
 				setClientes(response);
 			} catch (err) {
 				console.error("Error fetching personas", err);
@@ -23,8 +23,10 @@ export const BodyComponent = () => {
 
 	return (
         <>
-            <CreateComponent setClientes={setClientes} clientes={clientes}/>
-            <TablaComponent setClientes={setClientes} clientes={clientes} />
+		<div className="container-fluid col-lg-6 col-md-7 col-sm-12">
+            <CreateComponent setClientes={setClientes} clientes={clientes} editingCliente={editingCliente} setEditingCliente={setEditingCliente}/>
+            <TablaComponent setClientes={setClientes} clientes={clientes} setEditingCliente={setEditingCliente}/>
+		</div>
         </>
     );
 };

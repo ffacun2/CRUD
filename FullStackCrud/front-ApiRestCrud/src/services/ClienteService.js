@@ -37,12 +37,22 @@ export const deletePersona = async(id) => {
     }
 }
 
-export const updatePersona = async(id, cliente) => {
+export const getPersona = async(id) => {
     try{
-        const response = await api.put(`/personas/${id}`, cliente);
+        const response = await api.get(`/personas/${id}`);
         return response.data;
     }catch(err){
-        console.error('Error updating persona', err);
+        console.error('Error getting persona', err);
         throw err;
     }
 }
+
+export const updatePersona = async (cliente) => {
+	try {
+		const response = await api.put(`/personas/${cliente.id}`, cliente);
+		return response.data;
+	} catch (err) {
+		console.error("Error updating persona", err);
+		throw err;
+	}
+};
