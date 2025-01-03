@@ -12,6 +12,7 @@ El proyecto está dividido en dos partes principales:
 ### Backend (apiResCrud)
 
 #### Estructura de Directorios
+```
 apiResCrud/ 
 ├── .env 
 ├── .env.template 
@@ -40,7 +41,7 @@ apiResCrud/
 │ │ ├── java/ 
 │ │ │ ├── com/apiRestCrud/apiResCrud/ 
 │ │ │ │ ├── ApiResCrudApplicationTests.java
-
+```
 #### Archivos Principales
 
 - `ApiResCrudApplication.java`: Clase principal que inicia la aplicación Spring Boot.
@@ -53,18 +54,19 @@ apiResCrud/
 
 1. Clona el repositorio.
 2. Configura la base de datos en el archivo `.env`:
+3. ```
     SPRING_DATASOURCE_URL=jdbc:mysql://localhost:3306/crud
     SPRING_DATASOURCE_USERNAME=root
     SPRING_DATASOURCE_PASSWORD=
     SPRING_DATASOURCE_DB=crud
-
-3. Ejecuta el siguiente comando para iniciar la aplicación:
-    ./mvnw spring-boot:run
+    ```
+4. Ejecuta el siguiente comando para iniciar la aplicación:
+   ``` ./mvnw spring-boot:run```
 
 ### Frontend (front-ApiRestCrud)
 
 #### Estructura de Directorios
-
+```
 front-ApiRestCrud/ 
 ├── .gitignore 
 ├── eslint.config.js 
@@ -83,18 +85,18 @@ front-ApiRestCrud/
 │ ├── services/ 
 │ │ ├── ClienteService.js 
 ├── vite.config.js
-
+```
 #### Archivos Principales
 
-- [main.jsx](http://_vscodecontentref_/10): Punto de entrada de la aplicación React.
-- [HeaderComponent.jsx](http://_vscodecontentref_/11): Componente de cabecera.
-- [BodyComponent.jsx](http://_vscodecontentref_/12): Componente principal que contiene el formulario de creación y la tabla de personas.
-- [CreateComponent.jsx](http://_vscodecontentref_/13): Componente para crear y editar personas.
-- [TablaComponent.jsx](http://_vscodecontentref_/14): Componente que muestra la lista de personas en una tabla.
-- [ClienteService.js](http://_vscodecontentref_/15): Servicio que maneja las llamadas a la API REST.
+- `main.jsx`: Punto de entrada de la aplicación React.
+- `HeaderComponent.jsx`: Componente de cabecera.
+- `BodyComponent.jsx`: Componente principal que contiene el formulario de creación y la tabla de personas.
+- `CreateComponent.jsx`: Componente para crear y editar personas.
+- `TablaComponent.jsx`: Componente que muestra la lista de personas en una tabla.
+- `ClienteService.js`: Servicio que maneja las llamadas a la API REST.
 
 #### Configuración
 
 1. Clona el repositorio.
-2. Instala las dependencias:    npm install
-3. Inicia la aplicación:    npm run dev
+2. Instala las dependencias: ```   npm install```
+3. Inicia la aplicación: ```   npm run dev```
