@@ -65,7 +65,7 @@ apiResCrud/
 ### Frontend (front-ApiRestCrud)
 
 #### Estructura de Directorios
-
+```
 front-ApiRestCrud/ 
 ├── .gitignore 
 ├── eslint.config.js 
@@ -84,7 +84,7 @@ front-ApiRestCrud/
 │ ├── services/ 
 │ │ ├── ClienteService.js 
 ├── vite.config.js
-
+```
 #### Archivos Principales
 
 - [main.jsx](http://_vscodecontentref_/10): Punto de entrada de la aplicación React.
