@@ -12,6 +12,7 @@ El proyecto está dividido en dos partes principales:
 ### Backend (apiResCrud)
 
 #### Estructura de Directorios
+```
 apiResCrud/ 
 ├── .env 
 ├── .env.template 
@@ -40,7 +41,7 @@ apiResCrud/
 │ │ ├── java/ 
 │ │ │ ├── com/apiRestCrud/apiResCrud/ 
 │ │ │ │ ├── ApiResCrudApplicationTests.java
-
+```
 #### Archivos Principales
 
 - `ApiResCrudApplication.java`: Clase principal que inicia la aplicación Spring Boot.
