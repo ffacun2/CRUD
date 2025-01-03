@@ -54,13 +54,14 @@ apiResCrud/
 
 1. Clona el repositorio.
 2. Configura la base de datos en el archivo `.env`:
+3. ```
     SPRING_DATASOURCE_URL=jdbc:mysql://localhost:3306/crud
     SPRING_DATASOURCE_USERNAME=root
     SPRING_DATASOURCE_PASSWORD=
     SPRING_DATASOURCE_DB=crud
-
-3. Ejecuta el siguiente comando para iniciar la aplicación:
-    ./mvnw spring-boot:run
+    ```
+4. Ejecuta el siguiente comando para iniciar la aplicación:
+   ``` ./mvnw spring-boot:run```
 
 ### Frontend (front-ApiRestCrud)
 
@@ -97,5 +98,5 @@ front-ApiRestCrud/
 #### Configuración
 
 1. Clona el repositorio.
-2. Instala las dependencias:    npm install
-3. Inicia la aplicación:    npm run dev
+2. Instala las dependencias: ```   npm install```
+3. Inicia la aplicación: ```   npm run dev```
